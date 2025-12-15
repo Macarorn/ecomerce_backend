@@ -1,50 +1,68 @@
-const { v4: uuidv4 } = require('uuid');
-const { categorias } = require('../../../tienda-backend/src/services/db');
+import { categorias } from "../services/db.js";
 
-function getCategorias(req, res) {
-  return res.json(categorias);
+let nextId = 1;
+
+// GET /rest/v1/categorias
+export function getCategorias(req, res) {
+  res.json(categorias);
 }
 
-function getCategoriaById(req, res) {
-  const { id } = req.params;
-  const cat = categorias.find((c) => c.id === id);
-  if (!cat) return res.status(404).json({ error: 'Categoría no encontrada' });
-  return res.json(cat);
+// GET /rest/v1/categorias/:id
+export function getCategoriaById(req, res) {
+  const id = Number(req.params.id);
+  const categoria = categorias.find(c => c.id === id);
+
+  if (!categoria) {
+    return res.status(404).json({ error: "Categoría no encontrada" });
+  }
+
+  res.json(categoria);
 }
 
-function createCategoria(req, res) {
-  const { nombre, descripcion } = req.body || {};
-  if (!nombre) return res.status(400).json({ error: 'El campo nombre es requerido' });
-  const nueva = { id: uuidv4(), nombre, descripcion: descripcion || '' };
-  categorias.push(nueva);
-  return res.status(201).json(nueva);
-}
+// POST /rest/v1/categorias
+export function createCategoria(req, res) {
+  const { nombre, descripcion } = req.body;
 
-function updateCategoria(req, res) {
-  const { id } = req.params;
-  const { nombre, descripcion } = req.body || {};
-  const idx = categorias.findIndex((c) => c.id === id);
-  if (idx === -1) return res.status(404).json({ error: 'Categoría no encontrada' });
-  categorias[idx] = {
-    ...categorias[idx],
-    nombre: nombre ?? categorias[idx].nombre,
-    descripcion: descripcion ?? categorias[idx].descripcion,
+  if (!nombre) {
+    return res.status(400).json({ error: "El nombre es obligatorio" });
+  }
+
+  const nuevaCategoria = {
+    id: nextId++,
+    nombre,
+    descripcion: descripcion || ""
   };
-  return res.json(categorias[idx]);
+
+  categorias.push(nuevaCategoria);
+  res.status(201).json(nuevaCategoria);
 }
 
-function deleteCategoria(req, res) {
-  const { id } = req.params;
-  const idx = categorias.findIndex((c) => c.id === id);
-  if (idx === -1) return res.status(404).json({ error: 'Categoría no encontrada' });
-  const removed = categorias.splice(idx, 1)[0];
-  return res.json(removed);
+// PUT /rest/v1/categorias/:id
+export function updateCategoria(req, res) {
+  const id = Number(req.params.id);
+  const { nombre, descripcion } = req.body;
+
+  const categoria = categorias.find(c => c.id === id);
+
+  if (!categoria) {
+    return res.status(404).json({ error: "Categoría no encontrada" });
+  }
+
+  if (nombre !== undefined) categoria.nombre = nombre;
+  if (descripcion !== undefined) categoria.descripcion = descripcion;
+
+  res.json(categoria);
 }
 
-module.exports = {
-  getCategorias,
-  getCategoriaById,
-  createCategoria,
-  updateCategoria,
-  deleteCategoria,
-};
+// DELETE /rest/v1/categorias/:id
+export function deleteCategoria(req, res) {
+  const id = Number(req.params.id);
+  const index = categorias.findIndex(c => c.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ error: "Categoría no encontrada" });
+  }
+
+  const eliminada = categorias.splice(index, 1)[0];
+  res.json(eliminada);
+}

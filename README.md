@@ -1,35 +1,31 @@
-# Tienda Backend (Express) — Sofia Bonilla
+# Ecommerce Backend
 
-Servidor Express mínimo para endpoints de Categorías y Productos (CRUD).
+Backend desarrollado en Node.js con Express.
 
-Requisitos:
-- Node.js >= 16
-- npm
+## Endpoints — Categorías
 
-Instalación:
-```bash
-cd tienda-backend
-npm install
-```
+- GET /rest/v1/categorias
+- GET /rest/v1/categorias/:id
+- POST /rest/v1/categorias
+- PUT /rest/v1/categorias/:id
+- DELETE /rest/v1/categorias/:id
 
-Variables de entorno:
-- Copiar `.env.example` a `.env` y completar si usarás Supabase.
+## Endpoints — Productos
 
-Scripts:
-- `npm run dev` — iniciar con nodemon
-- `npm start` — iniciar con node
+- GET /rest/v1/productos
+- GET /rest/v1/productos/:id
+- POST /rest/v1/productos
+- PUT /rest/v1/productos/:id
+- DELETE /rest/v1/productos/:id
 
-Endpoints principales:
-- `GET /rest/v1/categorias`
-- `GET /rest/v1/categorias/:id`
-- `POST /rest/v1/categorias` (body: `{ nombre, descripcion? }`)
-- `PUT /rest/v1/categorias/:id`
-- `DELETE /rest/v1/categorias/:id`
+## Ejemplo POST Producto
 
-- `GET /rest/v1/productos`
-- `GET /rest/v1/productos/:id`
-- `POST /rest/v1/productos` (body: `{ nombre, descripcion?, precio, categoriaId? }`)
-- `PUT /rest/v1/productos/:id`
-- `DELETE /rest/v1/productos/:id`
-
-Documentación de ejemplos en `docs/endpoints.md`.
+```json
+{
+  "nombre": "Camisa",
+  "descripcion": "Camisa azul",
+  "precio": 45000,
+  "stock": 10,
+  "imagen_url": "https://img.com/camisa.png",
+  "categoria_id": 1
+}
