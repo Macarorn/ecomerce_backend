@@ -39,16 +39,16 @@ export const getOrdenById = async (req, res) => {
 
 // POST /rest/v1/orden → Crear orden
 export const createOrden = async (req, res) => {
-  const { user_id, total, estado } = req.body;
+  const { usuario_id, fecha, estado, total } = req.body;
 
   try {
     const { data, error } = await conn
       .from("Orden")  // <-- CAMBIADO AQUÍ
       .insert({
-        user_id,
-        total,
+        usuario_id,
+        fecha: new Date().toISOString(),
         estado,
-        fecha: new Date().toISOString()
+        total,
       })
       .select();
 
@@ -89,13 +89,24 @@ export const updateOrden = async (req, res) => {
   }
 };
 
-// DELETE /rest/v1/orden/:id → Eliminar orden
+// En orden.controller.js - MODIFICA la función deleteOrden
 export const deleteOrden = async (req, res) => {
   const { id } = req.params;
 
   try {
+    // PRIMERO: Eliminar todos los productos asociados a esta orden
+    const { error: errorProductos } = await conn
+      .from("Orden_Producto")
+      .delete()
+      .eq("orden_id", id);
+
+    if (errorProductos) {
+      return res.status(400).json({ error: errorProductos.message });
+    }
+
+    // SEGUNDO: Eliminar la orden
     const { error } = await conn
-      .from("Orden")  // <-- CAMBIADO AQUÍ
+      .from("Orden")
       .delete()
       .eq("id", id);
 
@@ -104,7 +115,7 @@ export const deleteOrden = async (req, res) => {
     }
 
     res.status(200).json({ 
-      message: 'Orden eliminada correctamente' 
+      message: 'Orden y sus productos eliminados correctamente' 
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

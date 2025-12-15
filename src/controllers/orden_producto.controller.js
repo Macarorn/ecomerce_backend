@@ -19,7 +19,7 @@ export const getOrdenProductos = async (req, res) => {
 
 // POST /rest/v1/orden-producto → Agregar producto a orden
 export const createOrdenProducto = async (req, res) => {
-  const { orden_id, producto_id, cantidad, precio } = req.body;
+  const { orden_id, producto_id, cantidad, precio_unitario } = req.body;
 
   try {
     const { data, error } = await conn
@@ -28,7 +28,7 @@ export const createOrdenProducto = async (req, res) => {
         orden_id,
         producto_id,
         cantidad,
-        precio
+        precio_unitario
       })
       .select();
 
@@ -49,12 +49,12 @@ export const createOrdenProducto = async (req, res) => {
 // PUT /rest/v1/orden-producto/:id → Actualizar cantidad o precio
 export const updateOrdenProducto = async (req, res) => {
   const { id } = req.params;
-  const { cantidad, precio } = req.body;
+  const { cantidad, precio_unitario } = req.body;
 
   try {
     const { error } = await conn
       .from("Orden_Producto")  // <-- CAMBIADO AQUÍ
-      .update({ cantidad, precio })
+      .update({ cantidad, precio_unitario })
       .eq("id", id);
 
     if (error) {

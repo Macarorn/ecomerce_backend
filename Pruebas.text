@@ -1,0 +1,74 @@
+Comandos para probar el (Get, Post, Put y Delete) de la tabla Orden
+
+Ejecutar desde el terminal
+
+Get para todas las ordenes 
+curl -X GET http://localhost:3000/rest/v1/orden
+
+Get para una orden especifica por id (En este caso con el id:3 que es la unica orden existente)
+curl -X GET http://localhost:3000/rest/v1/orden/3
+
+Post para crear una nueva orden (En usuario_id probar con los siguientes: 5, 6 o 7) que son los que ya hay creados
+curl -X POST http://localhost:3000/rest/v1/orden \
+  -H "Content-Type: application/json" \
+  -d '{
+    "usuario_id": 1,
+    "estado": "pendiente",
+    "total": 150.50
+  }'
+
+Put para actualizar orden
+# Reemplaza :id con el ID de la orden a actualizar (3, 6 o 9) justo al final del link donde esta el (1)
+curl -X PUT http://localhost:3000/rest/v1/orden/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "estado": "completada",
+    "total": 180.75
+  }'
+
+Delete para eliminar orden
+# Reemplaza :id con el ID de la orden a eliminar ( 6 o 9 por que la 3 ya la elimine) justo al final del link donde esta el (1)
+curl -X DELETE http://localhost:3000/rest/v1/orden/1
+
+
+
+
+Comandos para probar el (Get, Post, Put y Delete) de la tabla Orden_Productos
+
+
+GET /rest/v1/orden-producto - Listar productos en órdenes
+
+curl -X GET http://localhost:3000/rest/v1/orden-producto
+
+
+
+
+POST /rest/v1/orden-producto - Agregar producto a orden # Reemplaza orden_id con el ID de las ordenes que ya existen ( 6 o 9 por que la 3 ya la elimine)
+
+curl -X POST http://localhost:3000/rest/v1/orden-producto \
+  -H "Content-Type: application/json" \
+  -d '{
+    "orden_id": 1,
+    "producto_id": 5,
+    "cantidad": 2,
+    "precio_unitario": 25.99
+  }'
+
+
+
+
+PUT /rest/v1/orden-producto/:id - Actualizar producto en orden
+# Reemplaza :id con el ID de algun producto creado en la tabla (Orden_Producto) justo al final del link donde esta el (1)
+
+curl -X PUT http://localhost:3000/rest/v1/orden-producto/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cantidad": 3,
+    "precio_unitario": 27.50
+  }'
+
+
+DELETE /rest/v1/orden-producto/:id - Eliminar producto de la tabla Orden_Producto relacionado a una Orden
+
+# Reemplaza :id con el ID de algun producto creado en la tabla (Orden_Producto) justo al final del link donde esta el (1)
+curl -X DELETE http://localhost:3000/rest/v1/orden-producto/1
