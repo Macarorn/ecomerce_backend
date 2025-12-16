@@ -29,14 +29,16 @@ export const getUser = async (req, res) => {
 
 // Funcion para crear un usuario
 export const createUser = async (req, res) => {
-  const { nombre, correo, password } = req.body;
+  const { nombre, apellido, correo, telefono, password } = req.body;
 
   try {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const data = await conn.from("Usuarios").insert({
       nombre: nombre,
+      apellido: apellido,
       correo: correo,
+      telefono: telefono,
       password: hashedPassword,
     });
     res.status(201).json({ message: "Usuario creado", data: data });
