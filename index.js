@@ -1,3 +1,4 @@
+
 import "dotenv/config";
 import express from "express";
 import registerRoutes from "./src/routes.js";
@@ -15,3 +16,4 @@ app.get("/", (req, res) => {
 });
 
 registerRoutes(app);
+
