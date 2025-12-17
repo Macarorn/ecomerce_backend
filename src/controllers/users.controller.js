@@ -1,6 +1,40 @@
 import bcrypt from "bcrypt";
 import { conn } from "../connection/conn.js";
 
+// Login de usuario por nombre
+export const loginUser = async (req, res) => {
+  const { nombre, password } = req.body;
+  try {
+    const { data, error } = await conn
+      .from("Usuarios")
+      .select("*")
+      .eq("nombre", nombre)
+      .single();
+
+    if (error || !data) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, data.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Contraseña incorrecta" });
+    }
+
+    res.status(200).json({
+      message: "Inicio de sesión exitoso",
+      user: {
+        id: data.id,
+        nombre: data.nombre,
+        correo: data.correo,
+        apellido: data.apellido,
+        telefono: data.telefono,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 //Funciones para consultar a todos los usuarios y a uno en específico
 export const getUsers = async (req, res) => {
   const { data, error } = await conn
